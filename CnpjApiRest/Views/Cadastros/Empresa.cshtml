@@ -1,0 +1,180 @@
+﻿@model CnpjApiRest.Models.ApiRestCnpj
+
+
+<h2>Cadastro de Empresa</h2>
+@if (TempData["errocnpj"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Erro ao validar!</h4>
+        <p> @TempData["errocnpj"]</p>
+
+    </div>
+
+}
+@using (Html.BeginForm("BuscarCnpjApiAsync", "Cadastros"))
+{
+    <input id="searchcnpj" name="searchcnpj" type="text" class="form-control col-md-3" required="" style="margin-bottom: 20px; margin-top: 20px;" placeholder="Buscar dados CNPJ" pattern="[0-9]+$">
+
+    <button class="btn btn-success glyphicon glyphicon-search" style="margin-bottom: 20px; margin-top: 20px; border-bottom-right-radius:10px; border-top-right-radius:10px;" type="submit" value="pesquisar"></button>
+
+}
+<div class="dividerform">
+
+    <form id="formuser" action="/Cadastros/CadastrarEmpresa" method="post">
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="form-group col-sm-3">
+                <label>CNPJ</label>
+                <input class="form-control" name="Cnpj" type="text" value="@Model.cnpj" required="">
+
+            </div>
+            <!---->
+            <div class="form-group col-sm-6">
+                <label>Nome/Razão social</label>
+                <input class="form-control input-width" name="RazaoSocial" type="text" value="@Model.nome" required="">
+
+            </div>
+            <!---->
+            <div class="form-group col-sm-2">
+                <label>CNAE</label>
+                <input class="form-control" type="text" name="Cnae" value="@Model.cnaeprincipal" required="">
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label>ATIVIDADE PRINCIPAL</label>
+                <input class="form-control input-width" type="text" name="DescCnaePrincipal" value="@Model.descnaeprincipal" required="">
+
+            </div>
+            <!---->
+            <div class="form-group col-sm-3">
+                <label>EMAIL</label>
+                <input class="form-control input-width" type="text" name="Email" value="@Model.email" required="">
+
+            </div>
+            <!---->
+            <div class="form-group col-sm-6">
+                <label>Nome Fantasia</label>
+                <input class="form-control input-width" name="Fantasia" type="text" value="@Model.fantasia" required="">
+
+            </div>
+            <!---->
+
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-3">
+                <label>Inscrição estadual</label>
+                <input class="form-control" type="text" name="IEstadual" required="" value="@Model.Iestadual">
+
+            </div>
+            <!---->
+            <div class="form-group col-sm-3">
+                <label>Telefone</label>
+                <input class="form-control" type="text" name="Tel1" value="@Model.telefone" required="">
+
+            </div>
+            <!---->
+            <div class="form-group col-sm-3">
+                <label>Telefone 2</label>
+                <input class="form-control" type="text" name="Tel2" value="@Model.Tel2">
+
+            </div>
+            <!---->
+            <div class="form-group col-sm-3">
+                <label>CEP</label>
+                <input class="form-control" type="text" name="Cep" value="@Model.cep" required="">
+
+            </div>
+            <!---->
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label>Endereço</label>
+                <input class="form-control input-width" type="text" name="Endereco" value="@Model.logradouro" required="">
+
+            </div>
+            <!---->
+            <div class="form-group col-sm-2">
+                <label>Cidade</label>
+                <input class="form-control" type="text" name="Cidade" value="@Model.municipio">
+
+            </div>
+            <!---->
+            <div class="form-group col-sm-3">
+                <label>Bairro</label>
+                <input class="form-control" type="text" name="Bairro" value="@Model.bairro">
+
+            </div>
+            <!---->
+            <div class="form-group col-sm-1">
+                <label>Estado</label>
+                <input class="form-control" type="text" name="Estado" value="@Model.uf" required="">
+
+
+            </div>
+            <!---->
+            <div class="form-group col-sm-2">
+                <label>Data de Abertura</label>
+                <input class="form-control" type="datetime" name="Abertura" value="@Model.abertura" required="">
+            </div>
+            <!---->
+            <div class="form-group col-sm-4">
+                <label>Natureza Jurídica</label>
+                <input class="form-control input-width" type="text" name="NaturezaJur" value="@Model.natureza_juridica" required="">
+            </div>
+            <!---->
+            <div class="form-group col-sm-2">
+                <label>Porte Empresarial</label>
+                <input class="form-control" type="text" name="Porte" value="@Model.porte" required="">
+            </div>
+            <!---->
+
+        </div>
+        @if (Model.Iestadual != null)
+        {
+            <div class="form-group">
+                <button type="submit" id="btneditar" class="btn btn-success col-sm-2" style="margin-right:10px;">Salvar Edição</button>
+            </div>
+
+
+        }
+        @if (Model.nome == null)
+        {
+            <div class="form-group">
+                <button type="submit" id="btnsalvar" class="btn btn-success col-sm-1" style="margin-right:10px;">Salvar</button>
+            </div>
+            <!---->
+        }
+
+    </form>
+    <!---->
+    <!---->
+</div>
+@if (Model.Iestadual == null) {
+<h4>Atividades Secundárias</h4>
+<div class="dividerform">
+    
+    <table id="grid_cadastro" class="table table-responsive table-striped table-condensed table-hover text-uppercase">
+
+        <tbody>
+            @if (Model.atividades_secundarias != null)
+            {
+                foreach (var item in Model.atividades_secundarias)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.text)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.code)
+                        </td>
+                    </tr>
+                }
+
+            }
+        </tbody>
+    </table>
+</div>
+}
+
+<!---->
+<script src="~/Scripts/functionperson.js"></script>
